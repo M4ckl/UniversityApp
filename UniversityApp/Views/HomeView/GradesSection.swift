@@ -3,14 +3,16 @@ import SwiftUI
 struct GradesSection: View {
     
     @StateObject private var viewModel = GradesViewModel()
+    @State private var showAllGrades = false
     
     var body: some View {
         VStack(spacing: 8) {
-            SectionHeader(title: "Grades")
+            SectionHeader(title: "Grades", onMoreTapped: {
+                showAllGrades = true
+            })
             VStack(spacing: 8) {
                 ForEach(viewModel.visibleGrades) { grade in
                     GradeRow(grade: grade)
-                        
                         .transition(.asymmetric(
                             insertion: .move(edge: .bottom).combined(with: .opacity),
                             removal: .move(edge: .top).combined(with: .opacity)
@@ -18,6 +20,9 @@ struct GradesSection: View {
                 }
             }
             .animation(.spring(response: 0.5, dampingFraction: 0.8), value: viewModel.visibleGrades)
+        }
+        .navigationDestination(isPresented:  $showAllGrades) {
+            AllGradesView(grades: viewModel.allGrades)
         }
     }
 }

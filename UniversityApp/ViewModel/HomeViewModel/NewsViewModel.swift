@@ -1,18 +1,22 @@
 import SwiftUI
 import Combine
 
-
 class NewsViewModel: ObservableObject {
-    @Published var newsItems: [NewsItemModel] = []
+    @Environment(\.colorScheme) var colorScheme
+    
+    @Published var visibleNews: [NewsItemModel] = []
     @Published var selectedNews: NewsItemModel? = nil
+
+    var allNewsList: [NewsItemModel] = []
+    
     private let db = MockDatabaseService.shared
     
     init() { loadData() }
     
     func loadData() {
-        let allNews = db.news
+        let allNewsEntities = db.news
 
-        self.newsItems = allNews.map { news in
+        let convertedNews = allNewsEntities.map { news in
             return NewsItemModel(
                 id: news.id,
                 title: news.title,
@@ -22,5 +26,9 @@ class NewsViewModel: ObservableObject {
                 fullStory: news.content
             )
         }
+        
+        self.allNewsList = convertedNews
+
+        self.visibleNews = Array(convertedNews.prefix(1))
     }
 }

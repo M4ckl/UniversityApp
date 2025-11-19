@@ -3,27 +3,39 @@ import SwiftUI
 struct NewsSection: View {
     
     @StateObject private var viewModel = NewsViewModel()
+    @State private var showAllNews = false
     
     var body: some View {
         VStack(spacing: 12) {
-            SectionHeader(title: "News")
-  
-            if viewModel.newsItems.isEmpty {
+
+            SectionHeader(title: "News", onMoreTapped: {
+                print("More tapped")
+                showAllNews = true
+            })
+
+            if viewModel.visibleNews.isEmpty {
                 EmptyNewsView()
             } else {
                 VStack(spacing: 12) {
-                    ForEach(viewModel.newsItems) { item in
-                        NewsRow(item: item)
-                            .onTapGesture {
-                                // При нажатии - "выбираем" новость
-                                viewModel.selectedNews = item
-                            }
+                    ForEach(viewModel.visibleNews) { item in
+                        Button(action: {
+                            print("News item tapped")
+                            viewModel.selectedNews = item
+                        }) {
+                            NewsRow(item: item)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
             }
         }
-        .sheet(item: $viewModel.selectedNews) { newsItem in
-            NewsDetailView(item: newsItem)
+        .navigationDestination(isPresented: $showAllNews) {
+            AllNewsView(newsList: viewModel.allNewsList)
+        }
+        .sheet(item: $viewModel.selectedNews) { item in
+            NewsDetailView(item: item)
+                .presentationDetents([.fraction(0.7)])
+                .presentationDragIndicator(.visible)
         }
     }
 }
@@ -35,7 +47,7 @@ struct NewsRow: View {
     var body: some View {
         HStack {
             Spacer()
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .trailing, spacing: 4) {
                 Text(item.title)
                     .font(.system(size: 20, weight: .semibold))
                     .foregroundColor(Color("MainTextColor"))
@@ -45,15 +57,17 @@ struct NewsRow: View {
             }
         }
         .padding()
+        .frame(maxWidth: .infinity)
         .background(Color("BlockColor").opacity(0.5))
         .background(
-                Image(item.imageName)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
+            Image(item.imageName)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
         )
-        
         .cornerRadius(20)
+        .clipped()
         .shadow(color: .black.opacity(colorScheme == .dark ? 0.2 : 0.05), radius: 10, y: 5)
+        .contentShape(Rectangle())
     }
 }
 
@@ -63,7 +77,7 @@ struct EmptyNewsView: View {
             Image(systemName: "newspaper")
                 .font(.system(size: 30))
                 .foregroundColor(.gray.opacity(0.7))
-            
+
             Text("No news for today")
                 .font(.headline)
                 .foregroundColor(.gray)
@@ -72,7 +86,7 @@ struct EmptyNewsView: View {
         }
         .padding()
         .frame(maxWidth: .infinity)
-        .background(Color("BlockColor"))
+        .background(Color("BlockColor").opacity(0.5))
         .cornerRadius(20)
         .shadow(color: .black.opacity(0.05), radius: 10, y: 5)
     }
@@ -81,35 +95,73 @@ struct EmptyNewsView: View {
 struct NewsDetailView: View {
     
     let item: NewsItemModel
-    
     @Environment(\.dismiss) var dismiss
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 10) {
-                    Text(item.subtitle)
-                        .font(.headline)
-                        .foregroundColor(item.subtitleColor)
-                    
-                    Text(item.fullStory)
-                        .font(.body)
+            ZStack {
+                BackgroundView()
+                
+                ScrollView {
+                    VStack(alignment: .trailing, spacing: 12) {
+                        Text(item.subtitle)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 4)
+                            .font(.headline)
+                            .foregroundColor(item.subtitleColor)
+                            .background(Color("BlockColor"))
+                            .cornerRadius(20)
+                            .shadow(color: .black.opacity(colorScheme == .dark ? 0.2 : 0.05), radius: 10, y: 5)
+                        
+                        Image(item.imageName)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: 160)
+                            .cornerRadius(20)
+                            .clipped()
+                            .shadow(color: .black.opacity(colorScheme == .dark ? 0.2 : 0.05), radius: 10, y: 5)
+                        
+                        Text(item.fullStory)
+                            .font(.body)
+                            .lineSpacing(4)
+                            .foregroundColor(Color("MainTextColor"))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 16)
+                            .cornerRadius(20)
+                            .background(
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .fill(Color("BlockColor").opacity(0.9))
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .stroke(Color.black.opacity(0.2), lineWidth: 4)
+                                        .blur(radius: 10)
+                                        .offset(x: 2, y: 2)
+                                }
+                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                            )
+                            .shadow(color: .black.opacity(colorScheme == .dark ? 0.2 : 0.05), radius: 10, y: 5)
+                    }
+                    .padding()
                 }
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .navigationTitle(item.title)
-            .navigationBarTitleDisplayMode(.large)
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .principal) {
+                    Text(item.title)
+                        .font(.title).bold()
+                        .foregroundStyle(Color("MainTextColor"))
+                }
+                ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
                         dismiss()
                     }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title2)
-                            .foregroundColor(.gray.opacity(0.7))
+                        Image(systemName: "xmark")
+                            .font(.system(size: 14).bold())
                     }
+                    .buttonStyle(.plain)
                 }
             }
         }

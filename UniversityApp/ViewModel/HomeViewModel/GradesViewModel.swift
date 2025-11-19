@@ -4,7 +4,8 @@ import Combine
 class GradesViewModel: ObservableObject {
     
     @Published var visibleGrades: [GradeModel] = []
-    private var allGrades: [GradeModel] = []
+    var allGrades: [GradeModel] = []
+    private var remainingGrades: [GradeModel] = []
     
     private let db = MockDatabaseService.shared
     
@@ -13,7 +14,7 @@ class GradesViewModel: ObservableObject {
     func loadData() {
         let studentGrades = db.grades.filter { $0.studentId == db.mainStudent.id }
 
-        self.allGrades = studentGrades.compactMap { grade -> GradeModel? in
+        let convertedGrades = studentGrades.compactMap { grade -> GradeModel? in
             guard let task = db.tasks.first(where: { $0.id == grade.taskId }),
                   let subject = db.subjects.first(where: { $0.id == task.subjectId })
             else {
@@ -28,8 +29,11 @@ class GradesViewModel: ObservableObject {
             )
         }
 
-        self.visibleGrades = Array(allGrades.prefix(2))
-        self.allGrades = Array(allGrades.dropFirst(2))
+        self.allGrades = convertedGrades
+
+        self.visibleGrades = Array(convertedGrades.prefix(2))
+
+        self.remainingGrades = Array(convertedGrades.dropFirst(2))
     }
     
     func addNewGrade() {

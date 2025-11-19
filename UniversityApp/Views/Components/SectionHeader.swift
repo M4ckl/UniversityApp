@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SectionHeader: View {
     let title: String
+    var onMoreTapped: (() -> Void)? = nil
     
     var body: some View {
         HStack {
@@ -10,7 +11,7 @@ struct SectionHeader: View {
                 .foregroundColor(Color("MainTextColor"))
             Spacer()
             Button("more »") {
-                //TODO: Action for button
+                onMoreTapped?()
             }
             .font(.system(size: 16, weight: .medium))
             .foregroundColor(.gray)

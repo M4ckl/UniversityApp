@@ -118,7 +118,8 @@ class MockDatabaseService {
         ]
 
         self.news = [
-            NewsEntity(id: UUID(), universityId: uni.id, title: "Tech pause", subtitle: "from 8 to 12 pm", content: "Full description of the technical break.", date: Date(), imageName: "card_news")
+            NewsEntity(id: UUID(), universityId: uni.id, title: "Tech pause", subtitle: "from 8 to 12 pm", content: "\tWe’re taking a short technical break to make your experience even better.\n\tRight now, we’re updating systems, improving performance, and preparing new features. While this work is underway, the app may be unavailable or function with limitations.", date: Date(), imageName: "card_news_1"),
+            NewsEntity(id: UUID(), universityId: uni.id, title: "USOS update", subtitle: "version 1.01", content: "\tWe’ve made several improvements to keep the app running smoothly.This update includes performance enhancements, stability fixes, and general bug corrections.\nEnjoy a more reliable experience!", date: Date(), imageName: "card_news_2")
         ]
     }
 }
