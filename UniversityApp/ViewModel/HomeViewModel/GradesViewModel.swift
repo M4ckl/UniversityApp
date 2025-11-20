@@ -6,7 +6,7 @@ class GradesViewModel: ObservableObject {
     @Published var visibleGrades: [GradeModel] = []
     var allGrades: [GradeModel] = []
     private var remainingGrades: [GradeModel] = []
-    
+    @Published var selectedGrade: GradeModel? = nil
     private let db = MockDatabaseService.shared
     
     init() { loadData() }

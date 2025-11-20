@@ -14,10 +14,12 @@ struct AllNewsView: View {
                 ScrollView {
                     VStack(spacing: 12) {
                         ForEach(newsList) { item in
-                            NewsRow(item: item)
-                                .onTapGesture {
-                                    selectedNewsItem = item
-                                }
+                            Button(action: {
+                                selectedNewsItem = item
+                            }) {
+                                NewsRow(item: item)
+                            }
+                            .buttonStyle(ScaleButtonStyle())
                         }
                     }
                     .padding()

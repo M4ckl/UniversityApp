@@ -12,17 +12,25 @@ struct GradesSection: View {
             })
             VStack(spacing: 8) {
                 ForEach(viewModel.visibleGrades) { grade in
-                    GradeRow(grade: grade)
-                        .transition(.asymmetric(
-                            insertion: .move(edge: .bottom).combined(with: .opacity),
-                            removal: .move(edge: .top).combined(with: .opacity)
-                        ))
+                    Button(action: {
+                        viewModel.selectedGrade = grade
+                    }) {
+                        GradeRow(grade: grade)
+                    }
+                    .buttonStyle(ScaleButtonStyle())
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .bottom).combined(with: .opacity),
+                        removal: .move(edge: .top).combined(with: .opacity)
+                    ))
                 }
             }
             .animation(.spring(response: 0.5, dampingFraction: 0.8), value: viewModel.visibleGrades)
         }
         .navigationDestination(isPresented:  $showAllGrades) {
             AllGradesView(grades: viewModel.allGrades)
+        }
+        .sheet(item: $viewModel.selectedGrade) { grade in
+            GradeDetailView(grade: grade)
         }
     }
 }
@@ -70,7 +78,7 @@ struct GradeProgressRing: View {
     let color: Color
     let grade: Int
     
-    private let lineWidth: CGFloat = 4 // Толщина кольца
+    private let lineWidth: CGFloat = 4
     
     var body: some View {
         ZStack {

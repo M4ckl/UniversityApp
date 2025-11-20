@@ -19,12 +19,11 @@ struct NewsSection: View {
                 VStack(spacing: 12) {
                     ForEach(viewModel.visibleNews) { item in
                         Button(action: {
-                            print("News item tapped")
                             viewModel.selectedNews = item
                         }) {
                             NewsRow(item: item)
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(ScaleButtonStyle())
                     }
                 }
             }

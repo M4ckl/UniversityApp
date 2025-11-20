@@ -31,20 +31,23 @@ struct HomeView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    HStack{
-                        Text(db.mainStudent.fullName)
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundStyle(Color("MainTextColor"))
-                            .padding(.leading, 4)
-                        Image(db.mainStudent.avatarName)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 36, height: 36)
-                            .clipShape(Circle())
+                    NavigationLink(destination: ProfileView()) {
+                        HStack {
+                            Text(db.mainStudent.fullName)
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundStyle(Color("MainTextColor"))
+                                .padding(.leading, 4)
+                            
+                            Image(db.mainStudent.avatarName)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 36, height: 36)
+                                .clipShape(Circle())
+                        }
+                        .padding(.horizontal, 2)
                     }
-                    .padding(.horizontal, 2)
                 }
-           }
+            }
         }
     }
 }

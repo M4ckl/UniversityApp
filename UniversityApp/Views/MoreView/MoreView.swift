@@ -11,9 +11,10 @@ struct MoreView: View {
                 ScrollView {
                     VStack(spacing: 48) {
                         VStack(spacing: 12){
-                            ProfileCardView()
-
-                            
+                            NavigationLink(destination: ProfileView()) {
+                                ProfileCardView()
+                            }
+                            .buttonStyle(ScaleButtonStyle())
                             QuickActionsView()
                         }
                         VStack(spacing: 12){

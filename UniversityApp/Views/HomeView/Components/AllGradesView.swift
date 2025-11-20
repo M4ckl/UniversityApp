@@ -3,6 +3,7 @@ import SwiftUI
 struct AllGradesView: View {
     let grades: [GradeModel]
     @Environment(\.dismiss) var dismiss
+    @StateObject private var viewModel = GradesViewModel()
     
     var body: some View {
         NavigationStack {
@@ -12,7 +13,16 @@ struct AllGradesView: View {
                 ScrollView {
                     VStack(spacing: 12) {
                         ForEach(grades) { grade in
-                            GradeRow(grade: grade)
+                            Button(action: {
+                                viewModel.selectedGrade = grade
+                            }) {
+                                GradeRow(grade: grade)
+                            }
+                            .buttonStyle(ScaleButtonStyle())
+                            .transition(.asymmetric(
+                                insertion: .move(edge: .bottom).combined(with: .opacity),
+                                removal: .move(edge: .top).combined(with: .opacity)
+                            ))
                         }
                     }
                     .padding()
@@ -26,6 +36,9 @@ struct AllGradesView: View {
                         .font(.title3).bold()
                         .foregroundStyle(Color("MainTextColor"))
                 }
+            }
+            .sheet(item: $viewModel.selectedGrade) { grade in
+                GradeDetailView(grade: grade)
             }
         }
     }

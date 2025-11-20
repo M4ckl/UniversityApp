@@ -4,7 +4,7 @@ struct LessonBlockView: View {
     let lesson: LessonModel
     let timeColumnWidth: CGFloat = 70
     let gridPadding: CGFloat = 6
-    
+    let onMoreTapped: () -> Void
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
@@ -29,12 +29,15 @@ struct LessonBlockView: View {
                         .padding(.vertical,4)
                         .foregroundColor(.red).overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.red, lineWidth: 1))
                     Spacer()
-                    Button(action: {}) {
+                    Button(action: {
+                        onMoreTapped()
+                    }) {
                         Image(systemName: "ellipsis")
                             .rotationEffect(.degrees(90)).font(.body.weight(.bold)).foregroundColor(.secondary)
                             .frame(width: 36, height: 36)
                             .background(Color.gray.opacity(0.15)).clipShape(Circle())
                     }
+                    .buttonStyle(ScaleButtonStyle())
                 }
             }
             .padding(8)

@@ -4,7 +4,8 @@ import Combine
 struct TimetableView: View {
 
     @StateObject private var viewModel = TimetableViewModel()
-
+    @State private var selectedLesson: LessonModel? = nil
+    
     private let hourHeight: CGFloat = 80.0
     private let startHour: Int = 4
     private let visibleStartHour: Int = 8
@@ -35,9 +36,16 @@ struct TimetableView: View {
                                 startHour: startHour,
                             )
                             ForEach(viewModel.lessons) { lesson in
-                                LessonBlockView(lesson: lesson)
-                                    .frame(height: lesson.durationHours * hourHeight - 4)
-                                    .offset(y: calculateYOffset(for: lesson.startTime) + 2)
+                                LessonBlockView(
+                                    lesson: lesson,
+                                    onMoreTapped: {
+                                        withAnimation(.spring()) {
+                                            selectedLesson = lesson
+                                        }
+                                    }
+                                )
+                                .frame(height: lesson.durationHours * hourHeight - 4)
+                                .offset(y: calculateYOffset(for: lesson.startTime) + 2)
                             }
                             if viewModel.selectedDate.startOfDay() == AppContext.now().startOfDay() {
                                 NowIndicatorView(hourHeight: hourHeight, startHour: startHour)
@@ -64,6 +72,15 @@ struct TimetableView: View {
             }
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbarBackground(Color("EFEFEF"), for: .navigationBar)
+            .overlay {
+                if let lesson = selectedLesson {
+                    SubjectDetailView(lesson: lesson) {
+                        withAnimation(.spring()) {
+                            selectedLesson = nil
+                        }
+                    }
+                }
+            }
         }
     }
 
