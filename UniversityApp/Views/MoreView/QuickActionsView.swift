@@ -50,7 +50,7 @@ struct QuickActionButton: View {
               
             .shadow(color: .black.opacity(0.05), radius: 5, y: 3)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(ScaleButtonStyle())
     }
 }
 

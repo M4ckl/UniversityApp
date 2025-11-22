@@ -6,6 +6,7 @@ struct GradeModel: Identifiable, Equatable {
     let subjectName: String
     let eventType: String
     let gradeValue: Int
+    let teacherName: String
 
     var progress: CGFloat {
         return CGFloat(gradeValue) / 5.0
@@ -24,10 +25,11 @@ struct GradeModel: Identifiable, Equatable {
         }
     }
     
-    init(id: UUID = UUID(), subjectName: String, eventType: String, gradeValue: Int) {
+    init(id: UUID = UUID(), subjectName: String, eventType: String, gradeValue: Int, teacherName: String = "") {
         self.id = id
         self.subjectName = subjectName
         self.eventType = eventType
         self.gradeValue = gradeValue
+        self.teacherName = teacherName
     }
 }

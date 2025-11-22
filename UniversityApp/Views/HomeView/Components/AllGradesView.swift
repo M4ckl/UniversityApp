@@ -14,7 +14,11 @@ struct AllGradesView: View {
                     VStack(spacing: 12) {
                         ForEach(grades) { grade in
                             Button(action: {
-                                viewModel.selectedGrade = grade
+                                var transaction = Transaction()
+                                transaction.disablesAnimations = true
+                                withTransaction(transaction) {
+                                    viewModel.selectedGrade = grade
+                                }
                             }) {
                                 GradeRow(grade: grade)
                             }
@@ -37,8 +41,9 @@ struct AllGradesView: View {
                         .foregroundStyle(Color("MainTextColor"))
                 }
             }
-            .sheet(item: $viewModel.selectedGrade) { grade in
+            .fullScreenCover(item: $viewModel.selectedGrade) { grade in
                 GradeDetailView(grade: grade)
+                    .presentationBackground(.clear)
             }
         }
     }

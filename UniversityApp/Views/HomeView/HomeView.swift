@@ -44,7 +44,7 @@ struct HomeView: View {
                                 .frame(width: 36, height: 36)
                                 .clipShape(Circle())
                         }
-                        .padding(.horizontal, 2)
+                        .padding(.horizontal, 0)
                     }
                 }
             }

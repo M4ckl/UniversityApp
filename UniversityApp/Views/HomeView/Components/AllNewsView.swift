@@ -36,7 +36,7 @@ struct AllNewsView: View {
             }
             .sheet(item: $selectedNewsItem) { item in
                 NewsDetailView(item: item)
-                    .presentationDetents([.fraction(0.6)])
+                    .presentationDetents([.fraction(0.7)])
                     .presentationDragIndicator(.visible)
             }
         }

@@ -5,6 +5,7 @@ struct ScheduleSection: View {
 
     @StateObject private var viewModel = ScheduleViewModel()
     @Environment(\.colorScheme) var colorScheme
+    @State private var showTimetable = false
 
     var body: some View {
         VStack(spacing: 12) {
@@ -27,27 +28,34 @@ struct ScheduleSection: View {
             }
             .padding(.horizontal, 24)
 
-            if viewModel.scheduleItems.isEmpty {
-                EmptyScheduleView()
-            } else {
-                VStack(spacing: 4) {
-                    ForEach(viewModel.scheduleItems) { item in
-                        ScheduleRow(item: item)
-                        if item.id != viewModel.scheduleItems.last?.id {
-                            Rectangle()
-                                .fill(Color.gray.opacity(0.2))
-                                .frame(height: 1)
-                                .padding(.leading, 12)
-                                .padding(.trailing, 112)
+            Button(action: {
+                showTimetable = true
+            }) {
+                Group {
+                    if viewModel.scheduleItems.isEmpty {
+                        EmptyScheduleView()
+                    } else {
+                        VStack(spacing: 4) {
+                            ForEach(viewModel.scheduleItems) { item in
+                                ScheduleRow(item: item)
+                                if item.id != viewModel.scheduleItems.last?.id {
+                                    Rectangle()
+                                        .fill(Color.gray.opacity(0.2))
+                                        .frame(height: 1)
+                                        .padding(.leading, 12)
+                                        .padding(.trailing, 112)
+                                }
+                            }
                         }
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 12)
+                        .background(Color("BlockColor"))
+                        .cornerRadius(20)
+                        .shadow(color: .black.opacity(colorScheme == .dark ? 0.2 : 0.05), radius: 10, y: 5)
                     }
                 }
-                .padding(.vertical, 8)
-                .padding(.horizontal, 12)
-                .background(Color("BlockColor"))
-                .cornerRadius(20)
-                .shadow(color: .black.opacity(colorScheme == .dark ? 0.2 : 0.05), radius: 10, y: 5)
             }
+            .buttonStyle(ScaleButtonStyle())
         }
     }
 }

@@ -3,17 +3,15 @@ import SwiftUI
 struct SubjectDetailView: View {
     let lesson: LessonModel
     let onClose: () -> Void
-
+    @Environment(\.colorScheme) var colorScheme
+    
     @State private var isAppearing = false
     
     var body: some View {
         ZStack {
             Color.black.opacity(0.4)
                 .ignoresSafeArea()
-                .onTapGesture {
-                    onClose()
-                }
-
+                .onTapGesture { onClose() }
             VStack(spacing: 24) {
                 HStack(alignment: .top) {
                     if lesson.iconName.contains(".") {
@@ -53,46 +51,66 @@ struct SubjectDetailView: View {
                 
                 Divider()
                 VStack(alignment: .leading, spacing: 16) {
-                    DetailRow(icon: "person.fill", title: "Teacher", value: lesson.teacherName)
+                    HStack {
+                        DetailRow(icon: "person.fill", title: "Teacher", value: lesson.teacherName)
+                        
+                        Spacer()
+
+                        Button(action: { print("Contact teacher tapped") }) {
+                            HStack(spacing: 6) {
+                                Text("Contact")
+                                    .font(.caption.weight(.bold))
+                            }
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .foregroundColor(Color("MainTextColor").opacity(0.8))
+                            .background(Color.gray.opacity(0.2))
+                            .cornerRadius(15)
+                        }
+                        .buttonStyle(ScaleButtonStyle())
+                    }
                     DetailRow(icon: "clock.fill", title: "Time", value: "\(formatTime(lesson.startTime)) - \(formatTime(lesson.endTime))")
-                    DetailRow(icon: "location.fill", title: "Room", value: lesson.classroom)
                 }
                 
                 Divider()
-                VStack(spacing: 12) {
-                    Button(action: { print("Find Room tapped") }) {
+                HStack(spacing: 12) {
+
+                    Button(action: { print("Map to \(lesson.classroom) tapped") }) {
                         HStack {
                             Image(systemName: "map.fill")
-                            Text("Find Room")
+                            Text("Map to \(lesson.classroom)")
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.8)
                         }
                         .font(.headline)
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color.blue)
-                        .cornerRadius(15)
+                        .cornerRadius(30)
                     }
-                    
-                    HStack(spacing: 12) {
-                        Button(action: { print("Action 2 tapped") }) {
-                            Text("Materials")
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundColor(Color("MainTextColor"))
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.gray.opacity(0.15))
-                                .cornerRadius(15)
+                    .buttonStyle(ScaleButtonStyle())
+
+                    Button(action: { print("About tapped") }) {
+                        HStack {
+                            Image(systemName: "info.circle.fill")
+                            Text("About")
                         }
-                        Button(action: { print("Action 3 tapped") }) {
-                            Text("Contact")
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundColor(Color("MainTextColor"))
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.gray.opacity(0.15))
-                                .cornerRadius(15)
-                        }
+                        .font(.headline)
+                        .foregroundColor(Color("MainTextColor"))
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 30)
+                                .fill(Color.gray.opacity(0.1))
+                                .shadow(
+                                    color: .black.opacity(colorScheme == .dark ? 0.2 : 0.2),
+                                    radius: 3,
+                                    y: 2
+                                )
+                        )
                     }
+                    .buttonStyle(ScaleButtonStyle())
                 }
             }
             .padding(24)

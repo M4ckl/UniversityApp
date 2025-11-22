@@ -21,11 +21,15 @@ class GradesViewModel: ObservableObject {
                 return nil
             }
             
+            let teacher = db.teachers.first(where: { $0.id == subject.teacherId })
+            let teacherName = teacher?.fullName ?? "Unknown Teacher"
+            
             return GradeModel(
                 id: grade.id,
                 subjectName: subject.name,
                 eventType: task.type,
-                gradeValue: grade.markValue
+                gradeValue: grade.markValue,
+                teacherName: teacherName
             )
         }
 

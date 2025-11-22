@@ -17,13 +17,7 @@ struct MoreView: View {
                             .buttonStyle(ScaleButtonStyle())
                             QuickActionsView()
                         }
-                        VStack(spacing: 12){
-                            ServicesSectionView()
-
-                            SettingsCardView()
-                        }
-
-                        
+                        ServicesSectionView()
                     }
                     .padding(.horizontal)
                     .padding(.top, 20)
