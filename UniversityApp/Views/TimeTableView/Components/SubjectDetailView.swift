@@ -20,13 +20,13 @@ struct SubjectDetailView: View {
                             .foregroundColor(lesson.typeColor)
                             .frame(width: 60, height: 60)
                             .background(lesson.typeColor.opacity(0.1))
-                            .clipShape(Circle())
+                            .cornerRadius(15)
                     } else {
                         Image(lesson.iconName)
                             .resizable()
                             .scaledToFit()
                             .frame(width: 60, height: 60)
-                            .clipShape(Circle())
+                            .cornerRadius(15)
                     }
                     
                     VStack(alignment: .leading, spacing: 4) {
