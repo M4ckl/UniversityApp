@@ -1,6 +1,12 @@
 import Foundation
 
-struct ScheduleEntity: Identifiable {
+enum WeekType: Int, CaseIterable {
+    case both = 0
+    case odd = 1
+    case even = 2
+}
+
+struct ScheduleEntity: Identifiable, Hashable {
     let id: UUID
     var subjectId: UUID
     var groupId: UUID
@@ -10,4 +16,5 @@ struct ScheduleEntity: Identifiable {
     var endTime: Date
     var room: String
     var type: String
+    var weekType: WeekType = .both
 }

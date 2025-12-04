@@ -1,7 +1,7 @@
 import Foundation
 
 struct AppContext {
-    static let isTesting = true
+    static let isTesting = false
 
     private static var mockTime: Date {
         let components = DateComponents(year: 2025, month: 10, day: 14, hour: 12, minute: 40)

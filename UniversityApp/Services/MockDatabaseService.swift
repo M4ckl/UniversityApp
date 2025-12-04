@@ -17,6 +17,8 @@ class MockDatabaseService {
     private(set) var tasks: [TaskEntity] = []
     private(set) var grades: [GradeEntity] = []
     private(set) var news: [NewsEntity] = []
+    private(set) var holidays: [HolidayEntity] = []
+    private(set) var sessions: [SessionPeriodEntity] = []
     
     private(set) var mainStudent: StudentEntity!
     
@@ -26,7 +28,6 @@ class MockDatabaseService {
     
     private func createMockData() {
         
-        let calendar = Calendar.current
         
         let t_ada = TeacherEntity(id: UUID(), fullName: "Dr. Ada Lovelace", academicTitle: "Professor", email: "ada@uni.edu", avatarName: "teacher_avatar_1")
         let t_turing = TeacherEntity(id: UUID(), fullName: "Prof. Alan Turing", academicTitle: "Professor", email: "turing@uni.edu", avatarName: "teacher_avatar_2")
@@ -65,58 +66,82 @@ class MockDatabaseService {
         let s_four = StudentEntity(id: UUID(), groupId: group_isp31.id, fullName: "Sophie Harris", email: "s4@student.edu", avatarName: "student_avatar_4")
         self.students = [mainStudent, s_one, s_two, s_three, s_four]
         
-        let subj_prog = SubjectEntity(id: UUID(), teacherId: t_ada.id, name: "Programming", credits: 5, iconName: "subject_avatar_1")
-        let subj_opd = SubjectEntity(id: UUID(), teacherId: t_turing.id, name: "OPD", credits: 4, iconName: "subject_avatar_2")
-        let subj_math = SubjectEntity(id: UUID(), teacherId: t_euclid.id, name: "Mathematics", credits: 6, iconName: "subject_avatar_3")
-        let subj_design = SubjectEntity(id: UUID(), teacherId: t_ive.id, name: "Design", credits: 3, iconName: "subject_avatar_4")
-        let subj_physics = SubjectEntity(id: UUID(), teacherId: t_volt.id, name: "Physics", credits: 4, iconName: "subject_avatar_5")
-        let subj_philosophy = SubjectEntity(id: UUID(), teacherId: t_plato.id, name: "Philosophy", credits: 3, iconName: "subject_avatar_6")
-        let subj_databases = SubjectEntity(id: UUID(), teacherId: t_codd.id, name: "Databases", credits: 4, iconName: "subject_avatar_7")
-        let subj_algorithms = SubjectEntity(id: UUID(), teacherId: t_dijkstra.id, name: "Algorithms", credits: 5, iconName: "subject_avatar_8")
-        let subj_physed = SubjectEntity(id: UUID(), teacherId: t_armstrong.id, name: "Physical Ed.", credits: 2, iconName: "subject_avatar_9")
-        let subj_history = SubjectEntity(id: UUID(), teacherId: t_herodotus.id, name: "History", credits: 3, iconName: "subject_avatar_10")
-        self.subjects = [subj_prog, subj_opd, subj_math, subj_design, subj_physics, subj_philosophy, subj_databases, subj_algorithms, subj_physed, subj_history]
+        let subj_prog = SubjectEntity(id: UUID(), teacherId: t_ada.id, name: "Programming 3", credits: 5, iconName: "subject_avatar_1")
+        let subj_bot = SubjectEntity(id: UUID(), teacherId: t_turing.id, name: "Basic of Technologies", credits: 4, iconName: "subject_avatar_2")
+        let subj_bog = SubjectEntity(id: UUID(), teacherId: t_euclid.id, name: "Basic of Graphics", credits: 6, iconName: "subject_avatar_3")
+        let subj_net = SubjectEntity(id: UUID(), teacherId: t_ive.id, name: "Computer Networks", credits: 3, iconName: "subject_avatar_4")
+        let subj_engl = SubjectEntity(id: UUID(), teacherId: t_volt.id, name: "English", credits: 4, iconName: "subject_avatar_5")
+        let subj_pms = SubjectEntity(id: UUID(), teacherId: t_plato.id, name: "Probilistic Methods and Statistics", credits: 3, iconName: "subject_avatar_6")
+        let subj_databases = SubjectEntity(id: UUID(), teacherId: t_codd.id, name: "Database Systems", credits: 4, iconName: "subject_avatar_7")
+        let subj_physed = SubjectEntity(id: UUID(), teacherId: t_armstrong.id, name: "Physical Education", credits: 2, iconName: "subject_avatar_9")
+        self.subjects = [subj_prog, subj_bot, subj_bog, subj_net, subj_engl, subj_pms, subj_databases, subj_physed]
         
-        let today = AppContext.now().startOfDay()
-        let weekday = calendar.component(.weekday, from: today)
-        let daysToSubtract = (weekday == 1) ? 6 : (weekday - 2)
-        let monday = calendar.date(byAdding: .day, value: -daysToSubtract, to: today)!
-        let tuesday = calendar.date(byAdding: .day, value: 1, to: monday)!
-        let wednesday = calendar.date(byAdding: .day, value: 2, to: monday)!
-        let thursday = calendar.date(byAdding: .day, value: 3, to: monday)!
-        let friday = calendar.date(byAdding: .day, value: 4, to: monday)!
+        let isoFormatter = DateFormatter()
+        isoFormatter.dateFormat = "yyyy-MM-dd"
+        
+        func date(_ str: String) -> Date {
+            return isoFormatter.date(from: str) ?? Date()
+        }
+        
+        self.holidays = [
+            HolidayEntity(date: date("2025-01-01"), name: "Nowy Rok"),
+            HolidayEntity(date: date("2025-01-06"), name: "Trzech Króli"),
+            HolidayEntity(date: date("2025-04-20"), name: "Wielkanoc"),
+            HolidayEntity(date: date("2025-04-21"), name: "Poniedziałek Wielkanocny"),
+            HolidayEntity(date: date("2025-05-01"), name: "Święto Pracy"),
+            HolidayEntity(date: date("2025-05-03"), name: "Święto Konstytucji 3 Maja"),
+            HolidayEntity(date: date("2025-06-08"), name: "Zielone Świątki"),
+            HolidayEntity(date: date("2025-06-19"), name: "Boże Ciało"),
+            HolidayEntity(date: date("2025-08-15"), name: "Wniebowzięcie NMP"),
+            HolidayEntity(date: date("2025-11-01"), name: "Wszystkich Świętych"),
+            HolidayEntity(date: date("2025-11-11"), name: "Święto Niepodległości"),
+            HolidayEntity(date: date("2025-12-25"), name: "Boże Narodzenie (1)"),
+            HolidayEntity(date: date("2025-12-26"), name: "Boże Narodzenie (2)")
+        ]
+        
+        self.sessions = [
+            SessionPeriodEntity(startDate: date("2026-01-26"), endDate: date("2026-02-8"), name: "Sesja Zimowa"),
+            SessionPeriodEntity(startDate: date("2026-02-16"), endDate: date("2026-02-22"), name: "Sesja Zimowa Powtorna"),
+            SessionPeriodEntity(startDate: date("2026-06-15"), endDate: date("2026-07-5"), name: "Sesja Letnia")
+        ]
+        
+        let baseDate = Date().startOfDay()
         
         self.schedules = [
-            ScheduleEntity(id: UUID(), subjectId: subj_prog.id, groupId: group_isp31.id, teacherId: t_ada.id, dayOfWeek: 2, startTime: monday.withTime(hour: 10, minute: 0), endTime: monday.withTime(hour: 11, minute: 30), room: "909", type: "Lection"),
-            ScheduleEntity(id: UUID(), subjectId: subj_opd.id, groupId: group_isp31.id, teacherId: t_turing.id, dayOfWeek: 2, startTime: monday.withTime(hour: 11, minute: 45), endTime: monday.withTime(hour: 13, minute: 15), room: "234A", type: "Practice"),
-            ScheduleEntity(id: UUID(), subjectId: subj_math.id, groupId: group_isp31.id, teacherId: t_euclid.id, dayOfWeek: 2, startTime: monday.withTime(hour: 14, minute: 0), endTime: monday.withTime(hour: 15, minute: 30), room: "201", type: "Lection"),
-            ScheduleEntity(id: UUID(), subjectId: subj_design.id, groupId: group_isp31.id, teacherId: t_ive.id, dayOfWeek: 2, startTime: monday.withTime(hour: 18, minute: 30), endTime: monday.withTime(hour: 20, minute: 0), room: "301", type: "Computer"),
+            ScheduleEntity(id: UUID(), subjectId: subj_pms.id, groupId: group_isp31.id, teacherId: t_ada.id, dayOfWeek: 1, startTime: baseDate.withTime(hour: 8, minute: 15), endTime: baseDate.withTime(hour: 10, minute: 00), room: "134T", type: "Lection", weekType: .both),
+            ScheduleEntity(id: UUID(), subjectId: subj_bog.id, groupId: group_isp31.id, teacherId: t_turing.id, dayOfWeek: 1, startTime: baseDate.withTime(hour: 10, minute: 10), endTime: baseDate.withTime(hour: 11, minute: 50), room: "A171", type: "Practice", weekType: .both),
+            ScheduleEntity(id: UUID(), subjectId: subj_net.id, groupId: group_isp31.id, teacherId: t_turing.id, dayOfWeek: 1, startTime: baseDate.withTime(hour: 12, minute: 00), endTime: baseDate.withTime(hour: 13, minute: 40), room: "b273", type: "Practice", weekType: .both),
+            ScheduleEntity(id: UUID(), subjectId: subj_bog.id, groupId: group_isp31.id, teacherId: t_turing.id, dayOfWeek: 1, startTime: baseDate.withTime(hour: 14, minute: 00), endTime: baseDate.withTime(hour: 16, minute: 10), room: "134T", type: "Lection", weekType: .both),
             
-            ScheduleEntity(id: UUID(), subjectId: subj_physics.id, groupId: group_isp31.id, teacherId: t_volt.id, dayOfWeek: 3, startTime: tuesday.withTime(hour: 9, minute: 0), endTime: tuesday.withTime(hour: 10, minute: 30), room: "101", type: "Practice"),
-            ScheduleEntity(id: UUID(), subjectId: subj_philosophy.id, groupId: group_isp31.id, teacherId: t_plato.id, dayOfWeek: 3, startTime: tuesday.withTime(hour: 11, minute: 0), endTime: tuesday.withTime(hour: 12, minute: 30), room: "505", type: "Lection"),
+            ScheduleEntity(id: UUID(), subjectId: subj_databases.id, groupId: group_isp31.id, teacherId: t_euclid.id, dayOfWeek: 2, startTime: baseDate.withTime(hour: 8, minute: 30), endTime: baseDate.withTime(hour: 10, minute: 15), room: "A171", type: "Practice", weekType: .both),
+            ScheduleEntity(id: UUID(), subjectId: subj_engl.id, groupId: group_isp31.id, teacherId: t_ive.id, dayOfWeek: 2, startTime: baseDate.withTime(hour: 10, minute: 25), endTime: baseDate.withTime(hour: 12, minute: 15), room: "A271", type: "Practice", weekType: .both),
+            ScheduleEntity(id: UUID(), subjectId: subj_databases.id, groupId: group_isp31.id, teacherId: t_euclid.id, dayOfWeek: 2, startTime: baseDate.withTime(hour: 12, minute: 30), endTime: baseDate.withTime(hour: 14, minute: 00), room: "134T", type: "Lection", weekType: .both),
+            ScheduleEntity(id: UUID(), subjectId: subj_physed.id, groupId: group_isp31.id, teacherId: t_euclid.id, dayOfWeek: 2, startTime: baseDate.withTime(hour: 17, minute: 30), endTime: baseDate.withTime(hour: 19, minute: 30), room: "Hala Sportowa", type: "Sport", weekType: .both),
             
-            ScheduleEntity(id: UUID(), subjectId: subj_databases.id, groupId: group_isp31.id, teacherId: t_codd.id, dayOfWeek: 4, startTime: wednesday.withTime(hour: 10, minute: 0), endTime: wednesday.withTime(hour: 11, minute: 30), room: "DB2", type: "Computer"),
-            ScheduleEntity(id: UUID(), subjectId: subj_algorithms.id, groupId: group_isp31.id, teacherId: t_dijkstra.id, dayOfWeek: 4, startTime: wednesday.withTime(hour: 14, minute: 0), endTime: wednesday.withTime(hour: 15, minute: 30), room: "101", type: "Lection"),
+            ScheduleEntity(id: UUID(), subjectId: subj_bot.id, groupId: group_isp31.id, teacherId: t_volt.id, dayOfWeek: 3, startTime: baseDate.withTime(hour: 8, minute: 05), endTime: baseDate.withTime(hour: 9, minute: 35), room: "281A", type: "Lection", weekType: .even),
+            ScheduleEntity(id: UUID(), subjectId: subj_prog.id, groupId: group_isp31.id, teacherId: t_plato.id, dayOfWeek: 3, startTime: baseDate.withTime(hour: 8, minute: 00), endTime: baseDate.withTime(hour: 9, minute: 30), room: "134T", type: "Lection", weekType: .odd),
+            ScheduleEntity(id: UUID(), subjectId: subj_net.id, groupId: group_isp31.id, teacherId: t_plato.id, dayOfWeek: 3, startTime: baseDate.withTime(hour: 9, minute: 45), endTime: baseDate.withTime(hour: 11, minute: 15), room: "134T", type: "Lection", weekType: .both),
+            ScheduleEntity(id: UUID(), subjectId: subj_pms.id, groupId: group_isp31.id, teacherId: t_codd.id, dayOfWeek: 3, startTime: baseDate.withTime(hour: 12, minute: 15), endTime: baseDate.withTime(hour: 13, minute: 45), room: "B573", type: "Computer", weekType: .both),
             
-            ScheduleEntity(id: UUID(), subjectId: subj_physed.id, groupId: group_isp31.id, teacherId: t_armstrong.id, dayOfWeek: 5, startTime: thursday.withTime(hour: 8, minute: 0), endTime: thursday.withTime(hour: 9, minute: 30), room: "GYM", type: "Practice"),
-            ScheduleEntity(id: UUID(), subjectId: subj_history.id, groupId: group_isp31.id, teacherId: t_herodotus.id, dayOfWeek: 5, startTime: thursday.withTime(hour: 10, minute: 0), endTime: thursday.withTime(hour: 11, minute: 30), room: "303", type: "Lection"),
+            ScheduleEntity(id: UUID(), subjectId: subj_bot.id, groupId: group_isp31.id, teacherId: t_dijkstra.id, dayOfWeek: 4, startTime: baseDate.withTime(hour: 13, minute: 00), endTime: baseDate.withTime(hour: 14, minute: 30), room: "B153", type: "Practice", weekType: .both),
             
-            ScheduleEntity(id: UUID(), subjectId: subj_prog.id, groupId: group_isp31.id, teacherId: t_ada.id, dayOfWeek: 6, startTime: friday.withTime(hour: 12, minute: 0), endTime: friday.withTime(hour: 13, minute: 30), room: "909", type: "Practice")
+            ScheduleEntity(id: UUID(), subjectId: subj_prog.id, groupId: group_isp31.id, teacherId: t_armstrong.id, dayOfWeek: 5, startTime: baseDate.withTime(hour: 8, minute: 30), endTime: baseDate.withTime(hour: 10, minute: 00), room: "A172", type: "Practice", weekType: .even),
+            ScheduleEntity(id: UUID(), subjectId: subj_engl.id, groupId: group_isp31.id, teacherId: t_herodotus.id, dayOfWeek: 5, startTime: baseDate.withTime(hour: 10, minute: 15), endTime: baseDate.withTime(hour: 11, minute: 55), room: "B201", type: "Practice", weekType: .both),
         ]
-
+        
         let task_prog = TaskEntity(id: UUID(), subjectId: subj_prog.id, teacherId: t_ada.id, title: "Exam", type: "exam", dueDate: Date())
-        let task_opd = TaskEntity(id: UUID(), subjectId: subj_opd.id, teacherId: t_turing.id, title: "Kolokwium", type: "kolokwium", dueDate: Date())
-        let task_math = TaskEntity(id: UUID(), subjectId: subj_math.id, teacherId: t_euclid.id, title: "Test", type: "test", dueDate: Date())
-        let task_design = TaskEntity(id: UUID(), subjectId: subj_design.id, teacherId: t_ive.id, title: "Project", type: "project", dueDate: Date())
-        self.tasks = [task_prog, task_opd, task_math, task_design]
-
+        let task_bot = TaskEntity(id: UUID(), subjectId: subj_bot.id, teacherId: t_turing.id, title: "Kolokwium", type: "kolokwium", dueDate: Date())
+        let task_bog = TaskEntity(id: UUID(), subjectId: subj_bog.id, teacherId: t_euclid.id, title: "Test", type: "test", dueDate: Date())
+        let task_databases = TaskEntity(id: UUID(), subjectId: subj_databases.id, teacherId: t_ive.id, title: "Project", type: "project", dueDate: Date())
+        self.tasks = [task_prog, task_bot, task_bog, task_databases]
+        
         self.grades = [
             GradeEntity(id: UUID(), studentId: mainStudent.id, taskId: task_prog.id, markValue: 4, dateGiven: Date()),
-            GradeEntity(id: UUID(), studentId: mainStudent.id, taskId: task_opd.id, markValue: 5, dateGiven: Date()),
-            GradeEntity(id: UUID(), studentId: mainStudent.id, taskId: task_math.id, markValue: 3, dateGiven: Date()),
-            GradeEntity(id: UUID(), studentId: mainStudent.id, taskId: task_design.id, markValue: 5, dateGiven: Date())
+            GradeEntity(id: UUID(), studentId: mainStudent.id, taskId: task_bot.id, markValue: 5, dateGiven: Date()),
+            GradeEntity(id: UUID(), studentId: mainStudent.id, taskId: task_bog.id, markValue: 3, dateGiven: Date()),
+            GradeEntity(id: UUID(), studentId: mainStudent.id, taskId: task_databases.id, markValue: 5, dateGiven: Date())
         ]
-
+        
         self.news = [
             NewsEntity(id: UUID(), universityId: uni.id, title: "Tech pause", subtitle: "from 8 to 12 pm", content: "\tWe’re taking a short technical break to make your experience even better.\n\tRight now, we’re updating systems, improving performance, and preparing new features. While this work is underway, the app may be unavailable or function with limitations.", date: Date(), imageName: "card_news_1"),
             NewsEntity(id: UUID(), universityId: uni.id, title: "USOS update", subtitle: "version 1.01", content: "\tWe’ve made several improvements to keep the app running smoothly.This update includes performance enhancements, stability fixes, and general bug corrections.\nEnjoy a more reliable experience!", date: Date(), imageName: "card_news_2")

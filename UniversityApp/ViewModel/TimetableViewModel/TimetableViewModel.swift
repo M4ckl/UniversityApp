@@ -3,10 +3,15 @@ import Combine
 
 class TimetableViewModel: ObservableObject {
     
-    @Published var selectedDate: Date
+    @Published var selectedDate: Date {
+        didSet {
+            updateWeekDays()
+            loadLessonsForSelectedDate()
+        }
+    }
     @Published var weekDays: [Date] = []
     @Published var lessons: [LessonModel] = []
-
+    
     private let scheduleService = MockScheduleService.shared
     
     init() {
@@ -23,8 +28,8 @@ class TimetableViewModel: ObservableObject {
     }
     
     private func updateWeekDays() {
+        let monday = scheduleService.getStartOfWeek(for: selectedDate)
         let calendar = Calendar.current
-        let monday = scheduleService.startOfWeek
         
         self.weekDays = (0...4).map {
             calendar.date(byAdding: .day, value: $0, to: monday)!
@@ -33,5 +38,9 @@ class TimetableViewModel: ObservableObject {
     
     private func loadLessonsForSelectedDate() {
         self.lessons = scheduleService.getLessons(for: selectedDate)
+    }
+    
+    func getDayType(for date: Date) -> DayType {
+        return scheduleService.getDayType(for: date)
     }
 }

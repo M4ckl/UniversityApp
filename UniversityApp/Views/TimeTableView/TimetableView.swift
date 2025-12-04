@@ -2,9 +2,10 @@ import SwiftUI
 import Combine
 
 struct TimetableView: View {
-
+    
     @StateObject private var viewModel = TimetableViewModel()
     @State private var selectedLesson: LessonModel? = nil
+    @State private var showCalendar = false
     
     private let hourHeight: CGFloat = 80.0
     private let startHour: Int = 4
@@ -18,14 +19,14 @@ struct TimetableView: View {
     }
     
     private var bottomSpacing: CGFloat {
-            return -(hourHeight * 2)
+        return -(hourHeight * 2)
     }
-
+    
     var body: some View {
         NavigationStack {
             ZStack {
                 BackgroundView()
-
+                
                 VStack(spacing: 0) {
                     TimetableHeaderView(viewModel: viewModel)
                     Divider()
@@ -44,7 +45,8 @@ struct TimetableView: View {
                                         }
                                     }
                                 )
-                                .frame(height: lesson.durationHours * hourHeight - 4)
+                                .frame(height: lesson.durationHours * hourHeight - 4, alignment: .top)
+                                .clipped()
                                 .offset(y: calculateYOffset(for: lesson.startTime) + 2)
                             }
                             if viewModel.selectedDate.startOfDay() == AppContext.now().startOfDay() {
@@ -60,8 +62,10 @@ struct TimetableView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {}) {
-                        Text("September 2025")
+                    Button(action: {
+                        showCalendar = true
+                    }) {
+                        Text(viewModel.selectedDate.monthYearString)
                             .font(.system(size: 16))
                             .fontWeight(.semibold)
                             .foregroundStyle(Color("MainTextColor"))
@@ -69,6 +73,10 @@ struct TimetableView: View {
                             .foregroundColor(.red)
                     }
                 }
+            }
+            .sheet(isPresented: $showCalendar) {
+                CalendarModalView(selectedDate: $viewModel.selectedDate)
+                    .presentationDetents([.fraction(0.6)])
             }
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbarBackground(Color("EFEFEF"), for: .navigationBar)
@@ -83,7 +91,7 @@ struct TimetableView: View {
             }
         }
     }
-
+    
     private func calculateYOffset(for time: Date) -> CGFloat {
         let calendar = Calendar.current
         let hour = calendar.component(.hour, from: time)

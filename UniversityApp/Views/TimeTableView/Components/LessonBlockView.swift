@@ -3,25 +3,31 @@ import SwiftUI
 struct LessonBlockView: View {
     let lesson: LessonModel
     let timeColumnWidth: CGFloat = 70
-    let gridPadding: CGFloat = 6
+    let gridPadding: CGFloat = 12
     let onMoreTapped: () -> Void
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        HStack(alignment: .top) {
+        HStack(spacing: 0) {
             Rectangle()
                 .fill(lesson.typeColor)
                 .frame(width: 4)
-            VStack(alignment: .leading, spacing: 4) {
+                .frame(maxHeight: .infinity)
+            
+            VStack(alignment: .leading, spacing: 2) {
                 HStack {
                     Text(lesson.subjectName)
-                        .font(.headline).fontWeight(.bold)
+                        .font(.system(size: 16, weight: .bold))
+                        .fontWeight(.bold)
+                        .lineLimit(1)
                     Spacer()
                     LessonTag(text: lesson.type, color: lesson.typeColor)
                 }
                 Text(lesson.teacherName)
-                    .font(.subheadline).foregroundColor(.secondary)
-                Spacer()
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .lineLimit(1)
+                Spacer(minLength: 0)
                 HStack(alignment: .center) {
                     Text(lesson.classroom)
                         .font(.caption.weight(.medium))
@@ -33,19 +39,21 @@ struct LessonBlockView: View {
                         onMoreTapped()
                     }) {
                         Image(systemName: "ellipsis")
-                            .rotationEffect(.degrees(90)).font(.body.weight(.bold)).foregroundColor(.secondary)
-                            .frame(width: 36, height: 36)
+                            .rotationEffect(.degrees(90))
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .frame(width: 24, height: 24)
                             .background(Color.gray.opacity(0.15)).clipShape(Circle())
                     }
                     .buttonStyle(ScaleButtonStyle())
                 }
             }
-            .padding(8)
+            .padding(6)
         }
         .background(Color("BlockColor"))
         .cornerRadius(20)
         .shadow(color: .black.opacity(colorScheme == .dark ? 0.2 : 0.1), radius: 3, y: 2)
-        .padding(.leading, timeColumnWidth + gridPadding)
+        .padding(.leading, timeColumnWidth + 6)
         .padding(.trailing, 12)
     }
 }
